@@ -22,6 +22,9 @@ const showHelpInformation = async () => {
         Options
         -h | --help: Shows up help information
         -V | --version: Shows up verison information
+
+        Commands
+        create-pw-doc <path>: Create documentation website with postwoman-collection
     `
   console.log()
   await showBanner()
@@ -58,9 +61,22 @@ const showUnknownOptionInformation = async arg => {
   usageInfo()
 }
 
+const showCreatePwDocInformation = async () => {
+  console.log('Usage: create-pw-doc <path>')
+  console.log('\nCreate documentation website with postwoman-collection\n')
+  console.log('Options:')
+  console.log(
+    '  <path/to/postwoman-collection.json>    Path to postwoman-collection json file'
+  )
+  console.log(
+    '  -h, --help                             Output usage information\n'
+  )
+}
+
 module.exports = {
   showHelpInformation,
   showInvalidArgsInformation,
   showVersionInformation,
-  showUnknownOptionInformation
+  showUnknownOptionInformation,
+  showCreatePwDocInformation
 }

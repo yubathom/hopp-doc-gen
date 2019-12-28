@@ -26,6 +26,7 @@
   ],
   "author": "James George <jamesgeorge998001@gmail.com>",
   "dependencies": {
+    "fs-extra": "^8.1.0",
     "node-banner": "^1.4.0"
   },
   "devDependencies": {

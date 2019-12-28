@@ -1,0 +1,11 @@
+.theme-container {
+  .page > .content__default {
+    max-width: unset;
+    padding-left: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    & > *:not(.pw-rest) {
+      padding-left: 2.5rem;
+    }
+  }
+}
