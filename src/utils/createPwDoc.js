@@ -3,10 +3,6 @@ const fs = require('fs-extra')
 const { red, cyan, green } = require('kleur')
 
 const jsonContent = jsonPath => fs.readJsonSync(jsonPath, { throws: false })
-const errorMessage = (command, param, message) =>
-  ` ${red(
-    'Invalid command: '
-  )}postwoman-cli ${command} ${param} \n ${message}\n`
 
 const createPwDoc = async args => {
   const userCommand = args[0]
@@ -15,25 +11,15 @@ const createPwDoc = async args => {
   if (jsonContent(userParameter)) {
     console.log(jsonContent(userParameter))
   } else if (!userParameter) {
-    console.log(
-      errorMessage(
-        userCommand,
-        userParameter,
-        `
-    \r Please set ${cyan('<path/to/postwoman-collection.json)>')}
-    \r If you don't have this file create it at: ${green(
-      'https://postwoman.io'
-    )}`
-      )
-    )
+    console.log(` ${red('Invalid command:')} postwoman-cli ${userCommand} ${userParameter}`)
+    console.log()
+    console.log(` Please set ${cyan('<path/to/postwoman-collection.json)>')}`)
+    console.log(` If you don't have this file create it at: ${green('https://postwoman.io')}`)
+    console.log()
   } else {
-    console.log(
-      errorMessage(
-        userCommand,
-        userParameter,
-        `The file '${userParameter}' is unreadable\n`
-      )
-    )
+    console.log(` ${red('Invalid command:')} postwoman-cli ${userCommand} ${userParameter}`)
+    console.log(` The file '${userParameter}' is unreadable`)
+    console.log()
   }
 }
 
