@@ -1,25 +1,82 @@
 'use strict'
 const fs = require('fs-extra')
-const { red, cyan, green } = require('kleur')
+const inquirer = require('inquirer')
+const { red } = require('kleur')
+const {
+  showCreatePwDocInvalidPath,
+  showCreatePwDocCollNotJson
+} = require('./helpers')
 
-const jsonContent = jsonPath => fs.readJsonSync(jsonPath, { throws: false })
+// const setupPackages =
+
+/**
+ * Return
+ * @param   {string} pathname     the first number
+ * @param   {object} collection     the second number
+ *
+ * @returns {object}
+ */
+const setupDocFolder = (pathname, collection) => {
+  const haveFiles = pathname => {
+    fs.ensureDirSync(pathname)
+    const length = fs.readdirSync(pathname).length
+    return length ? length : console.log(`${pathname} folder was created`)
+  }
+
+  const overwrite = {
+    type: 'confirm',
+    name: 'overwrite',
+    message: `There is already a folder named ${red(
+      pathname
+    )}. Would you like to overwrite it?`,
+    default: false
+  }
+
+  const folder = {
+    type: 'input',
+    name: 'folder',
+    message: 'Which folder? Please type',
+    default:
+      pathname === 'documentation'
+        ? 'type another folder name'
+        : 'documentation'
+  }
+
+  if (haveFiles(pathname)) {
+    inquirer
+      .prompt([overwrite])
+      .then(overwrite => overwrite)
+      .then(res => {
+        if (res.overwrite) {
+          res.folder = pathname
+          console.log(res)
+        } else {
+          inquirer.prompt([folder]).then(res => {
+            if (haveFiles(res.folder)) {
+              setupDocFolder(res.folder, collection)
+            } else {
+              res.overwrite = false
+              console.log(res)
+            }
+          })
+        }
+      })
+  }
+}
 
 const createPwDoc = async args => {
-  const userCommand = args[0]
-  const userParameter = args[1]
+  const getColection = pathname => fs.readJsonSync(pathname, { throws: false })
+  const command = args[0]
+  const path = args[1]
+  const collection =
+    getColection(path) || getColection('./postwoman-collection.json')
 
-  if (jsonContent(userParameter)) {
-    console.log(jsonContent(userParameter))
-  } else if (!userParameter) {
-    console.log(` ${red('Invalid command:')} postwoman-cli ${userCommand} ${userParameter}`)
-    console.log()
-    console.log(` Please set ${cyan('<path/to/postwoman-collection.json)>')}`)
-    console.log(` If you don't have this file create it at: ${green('https://postwoman.io')}`)
-    console.log()
-  } else {
-    console.log(` ${red('Invalid command:')} postwoman-cli ${userCommand} ${userParameter}`)
-    console.log(` The file '${userParameter}' is unreadable`)
-    console.log()
+  if (collection) {
+    setupDocFolder('doc', collection)
+  } else if (!path) {
+    showCreatePwDocInvalidPath(command, path)
+  } else if (!collection) {
+    showCreatePwDocCollNotJson(command, path)
   }
 }
 

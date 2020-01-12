@@ -1,6 +1,7 @@
 'use strict'
 
 const bannerInfo = require('node-banner')
+const { red, cyan, green } = require('kleur')
 
 // root command
 const scriptName = 'postwoman-cli'
@@ -62,15 +63,37 @@ const showUnknownOptionInformation = async arg => {
 }
 
 const showCreatePwDocInformation = async () => {
-  console.log('Usage: create-pw-doc <path>')
-  console.log('\nCreate documentation website with postwoman-collection\n')
-  console.log('Options:')
+  await showBanner()
+  console.log(` Usage: ${scriptName} create-pw-doc <path>`)
+  console.log(' Create documentation website with postwoman-collection')
+  console.log(' Options:')
   console.log(
-    '  <path/to/postwoman-collection.json>    Path to postwoman-collection json file'
+    '   <path/to/postwoman-collection.json>    Path to postwoman-collection json file'
   )
   console.log(
-    '  -h, --help                             Output usage information\n'
+    '   -h, --help                             Output usage information'
   )
+  console.log()
+}
+
+const showCreatePwDocInvalidPath = async (command, path) => {
+  await showBanner()
+  console.log(` ${red('Invalid command:')} postwoman-cli ${command} ${path}`)
+  console.log()
+  console.log(` Please set ${cyan('<path/to/postwoman-collection.json)>')}`)
+  console.log(
+    ` If you don't have this file create it at: ${green(
+      'https://postwoman.io'
+    )}`
+  )
+  console.log()
+}
+
+const showCreatePwDocCollNotJson = async (command, path) => {
+  await showBanner()
+  console.log(` ${red('Invalid command:')} postwoman-cli ${command} ${path}`)
+  console.log(` The file '${path}' is unreadable`)
+  console.log()
 }
 
 module.exports = {
@@ -78,5 +101,7 @@ module.exports = {
   showInvalidArgsInformation,
   showVersionInformation,
   showUnknownOptionInformation,
-  showCreatePwDocInformation
+  showCreatePwDocInformation,
+  showCreatePwDocInvalidPath,
+  showCreatePwDocCollNotJson
 }
